@@ -1,0 +1,1 @@
+//element = document.querySelector(selectors);

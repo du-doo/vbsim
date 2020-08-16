@@ -1,0 +1,174 @@
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WBSim</title>
+    <meta name="description" content="WebBusSimulator">    
+<!--AFRAME release + extras with dynamic functionality-->
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>  
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v5.0.0/dist/aframe-extras.js"></script>
+<!--Sharing Entities    -->
+    <script src="js/0.6.1networked-aframe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>   
+    <script src="easyrtc/easyrtc.js"></script>
+<!--Interaction events -->
+    <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://rawgit.com/urish/aframe-camera-events/master/index.js"></script>    
+    <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.14/dist/aframe-orbit-controls-component.min.js"></script>
+<!--Controls and materials -->
+    <script src="/js/userIDplaced.js"></script>
+    <script src="/js/transparent_material.js"></script>
+    <script src="/js/vehicle_control.js"></script> 
+<!--Boostrap CSS -->
+    <link rel="stylesheet" href="css/ui.css" >
+  </head>
+  
+  <body> 
+<!--- A-FRAME SCENE ----------------------------------------------------------------------------------------------------->
+    <a-scene  
+             vr-mode-ui="enabled: false"
+             ar-mode-ui="enabled: false"
+             networked-scene="
+                              room: basic;
+                              debug: true;
+                              transport: websocket;                           
+                            "
+             >
+    <a-assets timeout="15000">
+<!-- PATHs of attached models -  stored on github ------------------------------------------------------------------------>
+        
+        <a-asset-item id="environment-obj" src="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSim2/contryroads.obj"></a-asset-item>
+        <a-asset-item id="environment-mtl" src="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSim2/contryroads.mtl"></a-asset-item>
+         
+        <img id="sky4" src="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/sunflowers_2k.jpeg" crossorigin="anonymous" />
+      
+<!-- Templates - objects utilized in AVATAR MODEL construction ------------------------------------------------------------------------>
+         
+        <template id="avatar-template">
+          <a-entity class="avatar">
+          </a-entity>
+        </template>
+        
+         <template id="avatar-karosab732">
+          <a-entity class="karosabodyavatar">                        
+            <a-obj-model class="objmodelclass" 
+                         src="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/karosab732/karosab732.obj" 
+                         mtl="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/karosab732/karosab732.mtl" 
+                         scale="1 1 1" rotation="0 0 0">  </a-obj-model>
+            <a-text class="idtext" visible="true" rotation="0 183 0" position="0.71036 2.98203 -9.18899" text="value: -" scale="1.5 1.5 1"></a-text>
+          </a-entity>
+        </template>  
+        
+        <template id="avatar-karosab952">
+          <a-entity class="karosabodyavatar">                        
+            <a-obj-model class="objmodelclass" 
+                         src="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/karosab951/karosab951.obj" 
+                         mtl="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/karosab951/karosab951.mtl" 
+                         scale="1 1 1" rotation="0 0 0">  </a-obj-model>
+            <a-text class="idtext" visible="true" rotation="0 183 0" position="0.71036 2.98203 -9.18899" text="value: -" scale="1.5 1.5 1"></a-text>
+          </a-entity>
+        </template> 
+        
+        <template id="avatar-karosaSM">
+          <a-entity class="karosabodyavatar">                        
+            <a-obj-model class="objmodelclass" 
+                         src="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/karosaSx/karosaSM.obj" 
+                         mtl="https://raw.githubusercontent.com/mayorian/glitchproject/master/DrivingSimAFRAME/karosaSx/karosaSM.mtl" 
+                         scale="1 1 1" rotation="0 0 0">  </a-obj-model>
+            <a-text class="idtext" visible="true" rotation="0 183 0" position="0.71036 2.98203 -9.18899" text="value: -" scale="1.5 1.5 1"></a-text>
+          </a-entity>
+        </template> 
+
+    </a-assets> 
+<!-- /END OF Templates ---------------------------------------------------------------------------------------------------->
+
+<!--SHARED ENTITIES------------------------------------------------------------------------------------------------------>   
+     <a-entity id="fullbody"> 
+         <a-entity   
+                    id="rig"      
+                    networked="template:#avatar-karosaSM;attachTemplateToLocal:true;"              
+                    position = "-3 0 -3"
+                    rotation="0 0 0"
+                    vehicle-move-wasd
+                    gaze-interaction
+                    select-vehicle                 
+           > 
+           <a-text class="idtext" visible="true" rotation="0 183 0" position="0.71036 2.98203 -9.18899" text="value: -" head-text scale="1.5 1.5 1"></a-text>
+           
+                  <a-entity
+                            id="playerhead"
+                            networked="template:#avatar-template;attachTemplateToLocal:false;"  
+                            camera
+                            position="0 5 7"
+                            orbit-controls="
+                                              autoRotate: false;
+                                              target: #target;
+                                              enableDamping: true;
+                                              dampingFactor: 0.125;
+                                              rotateSpeed:0.25;
+                                              minDistance:3;
+                                              maxDistance:100;
+                                              " 
+                      >
+                    </a-entity>
+                    <a-text class="idtext" visible="true" head-text ></a-text>
+        </a-entity>       
+    </a-entity>
+<!-- END OFSHARED ENTITIES------------------------------------------------------------------------------------------------------>   
+<!-- NAF SCHEMES ------------------------------------------------------------------------------------------------------>   
+  <script  src="vehicles/nafschemes.js" type="text/javascript">  
+  </script>
+<!-- END OF NAF SCHEMES ------------------------------------------------------------------------------------------------------>
+<!-- ENVIRONMENT OBJECTs------------------------------------------------------------------------------------------------------>   
+      <a-entity id="target" position="0 0 0" set-target-position > </a-entity> 
+      
+      <a-obj-model id="environmentmodel" src="#environment-obj" mtl="#environment-mtl" material="alphaTest: 0.5" transparent="true" scale="1 1 1" position="18.492 0 -469.227" rotation="0 -90 0">
+      </a-obj-model> 
+            
+      <a-entity light="color: #fff; intensity: 1.0; type: ambient;" visible="true"></a-entity>
+
+      <a-sky id="skybox" src="#sky4" rotation="0 -90" material="" scale="7 7 7" position="0 0 0"></a-sky>
+      
+      <script> 
+        var el = document.querySelector('#environmentmodel');
+        el.addEventListener('model-loaded', function (e) {
+          e.detail.model.traverse(function (node) {
+            if ( node.isMesh ) node.material.alphaTest = 0.8;
+            if( node.material ) {
+                node.material.side = THREE.DoubleSide;
+            }
+          });
+        });
+      </script>
+ </a-scene> 
+<!-- END OF SCENE ------------------------------------------------------------------------------------------------------>   
+<!-- TOUCH CONTROLS only for mobile devices ---------------------------------------------------------------------------->   
+    
+    <div id="controlsTouch" class="controls">  
+      <div class="row" style="text-align:center;top: 50%;">
+        <div class="column" style="background-color:rgba(0, 0, 0, 0.0);">
+          <h2>  </h2>
+          <p><button id="buttonF" class="button" style="background: url('https://cdn.glitch.com/ff4647b2-2e58-40ed-b23c-9fd2e8e158a3%2Farrow.png?v=1596942043618') no-repeat top left; transform: rotate(0deg);"></button></p>
+          <p><button id="buttonB" class="button" style="background: url('https://cdn.glitch.com/ff4647b2-2e58-40ed-b23c-9fd2e8e158a3%2Farrow.png?v=1596942043618') no-repeat top left; transform: rotate(180deg);"></button> </p>        
+        </div>
+        <div class="column" style="background-color:rgba(0, 0, 0, 0.0);">
+          <h2> </h2>
+        </div>
+        <div class="column" style="background-color:rgba(0, 0, 0, 0.0);">
+          <h2>  </h2>
+          <p><button id="buttonL" class="button" style="background: url('https://cdn.glitch.com/ff4647b2-2e58-40ed-b23c-9fd2e8e158a3%2Farrow.png?v=1596942043618') no-repeat top left; transform: rotate(270deg);"></button></p>
+          <p><button id="buttonR" class="button" style="background: url('https://cdn.glitch.com/ff4647b2-2e58-40ed-b23c-9fd2e8e158a3%2Farrow.png?v=1596942043618') no-repeat top left; transform: rotate(90deg);"></button> </p>      
+        </div>
+      </div>
+    </div>
+    
+    <div id="smartphoneControls" class="controls">
+      <label class="switch">
+        <input type="checkbox" id="controlSwitch">
+        <span class="slider round"></span>
+      </label>
+<!--       <img src="https://cdn.glitch.com/ff4647b2-2e58-40ed-b23c-9fd2e8e158a3%2Fjoyico.png?v=1596919154716" width="60" height="60"> -->
+    </div>
+<!-- END OF TOUCH CONTROLS ---------------------------------------------------------------------------------------------->  
+  </body>
+</html>
